@@ -1,44 +1,52 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom';
+import {observer} from 'mobx-react';
+import {observable,action} from 'mobx';
+import { any } from 'prop-types';
 
-interface AppProps {
 
-   text: string;
-   age: number;
+
+class inputstate {
+    @observable name='jsldkf';
+    @observable age= 33;
+    @observable email='';
+
+    @action onChangeHandler = (value:string):void =>{
+       this.name = value;
+    }
+};
+
+interface IInputState {
+    store: inputstate;
 }
 
-interface AppState {
-   name: string;
-   email: string;
-   age: number;
-}
+@observer
+class App extends React.Component<IInputState, {}> {
 
-class App extends React.Component<AppProps,AppState> {
-
-    constructor(props){
+/*     constructor(props:AppProps){
         super(props);
         this.state = {
             name: this.props.text,
             age: this.props.age,
 			email: '',
         };
+    } */
 
-    }
-	
-	onChangeHandler = (e:React.FormEvent<HTMLInputElement>)=>{
-	    const {name, value}: any = e.target;
-		console.log(name,value);
-		this.setState({name: value});
-	    
+    onChangeHandler = (e:React.FormEvent<HTMLInputElement>)=>{
+	    const { value}: any = e.target;
+        console.log(e.target);
+        //this.props.store.name = value;
+        this.props.store.onChangeHandler(value);
 	}
 	
     render(): JSX.Element{
-	    const {name,age} = this.state;
+        console.log(this.props);
+        const {name, age} = this.props.store;
         return(
              <div> 
-                 {this.state.name}
+                 {name}
                  <br />
-                 {this.state.age}
+                 {age}
 				 <br />
 				 <input type='text' name='name'  value={name} onChange={this.onChangeHandler} />
              </div>
@@ -48,4 +56,4 @@ class App extends React.Component<AppProps,AppState> {
 
 }
 
-ReactDOM.render(<App text={'xxjskf'}  age={23} />,document.querySelector('#root'));
+ReactDOM.render(<App store={new inputstate} />,document.querySelector('#root'));
