@@ -1,6 +1,6 @@
 import {types} from 'mobx-state-tree';
 
-const Todo = types
+export const Todo = types
     .model('Todo',{
         id: types.number,
         title: '',
@@ -10,10 +10,10 @@ const Todo = types
         toggleDone(){
             self.done = !self.done;
         },
-        enableLog(value: any){
-            console.log(value);
+        dumpItem(){
+            console.dir(self);
         },
-        onTitleChange(value: string) {
+        onTitleEdit(value: string) {
             self.title = value;
         },
         onIdChange(value: number) {
@@ -22,8 +22,9 @@ const Todo = types
     }));
     
 
-const ToDoStore = types
+export const ToDoStore = types
     .model('TodoStoreArray',{
+        words: '',
         todos: types.array(Todo),
     })
     .views(self=>({
@@ -40,10 +41,12 @@ const ToDoStore = types
        },
        deleteTodo(id: number) {
           return self.todos.filter(todo=> todo.id !== id);
+       },
+       setWords(value: string){
+           self.words=value;
        }
     }));
     
-export const todoStore = ToDoStore.create({todos:[]});
 
 export interface ITodoStore {
     todostore: typeof ToDoStore.Type;
